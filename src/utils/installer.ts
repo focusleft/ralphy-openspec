@@ -89,8 +89,8 @@ export async function installToolTemplates(
     await fse.copy(src, dst, { overwrite: opts.force, errorOnExist: false });
   }
 
-  // Claude Code
-  if (tools.includes("claude-code")) {
+  // Claude Code — always install as skills so /ralphy commands are available
+  {
     const src = path.join(templatesRoot, "claude-code");
     const dst = path.join(projectDir, ".claude", "commands");
     await fse.ensureDir(dst);
