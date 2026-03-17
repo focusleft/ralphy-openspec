@@ -2,71 +2,75 @@
 
 **Spec-driven AI development for Claude Code.** Combines OpenSpec + Ralph Loop for predictable, iterative AI-assisted coding.
 
-## Create a New Project (Step by Step)
-
-These steps create a brand new project from scratch. The new project is its own git repo -- completely independent of ralphy-spec.
-
-### 1. Create the project folder and initialize it
+## Create a New Project (One Command)
 
 ```bash
-mkdir my-notes-app
-cd my-notes-app
-git init
-npm init -y
+git clone https://github.com/focusleft/ralphy-openspec.git
+./ralphy-openspec/create-project.sh my-notes-app
 ```
 
-### 2. Scaffold ralphy-spec
+That's it. The script:
 
-```bash
-npx ralphy-spec init --tools claude-code
+1. Checks prerequisites (git, Node.js >= 20, npm)
+2. Builds ralphy-spec and links the CLI globally
+3. Creates `my-notes-app/` with git + npm initialized
+4. Runs `ralphy-spec init` (copies skill commands to `.claude/commands/`)
+5. Sets up `.gitignore` and makes the first commit
+
+When it finishes you'll see:
+
+```
+Done! Your project is ready.
+
+  cd my-notes-app
+  claude
+
+Inside Claude Code, use these commands:
+
+  /ralphy-plan          Plan a feature (asks you questions first)
+  /ralphy-implement     Build it from the spec
+  /ralphy-validate      Verify acceptance criteria
+  /ralphy-archive       Archive completed work
 ```
 
-This creates everything you need:
+### What the script creates
 
 ```
-my-notes-app/
-├── .claude/commands/        # Skill commands (auto-installed)
-│   ├── ralphy-plan.md       #   /ralphy-plan
-│   ├── ralphy-implement.md  #   /ralphy-implement
-│   ├── ralphy-validate.md   #   /ralphy-validate
-│   └── ralphy-archive.md    #   /ralphy-archive
+my-notes-app/                    # Your new project (independent git repo)
+├── .claude/commands/            # Skill commands (auto-installed)
+│   ├── ralphy-plan.md           #   /ralphy-plan
+│   ├── ralphy-implement.md      #   /ralphy-implement
+│   ├── ralphy-validate.md       #   /ralphy-validate
+│   └── ralphy-archive.md        #   /ralphy-archive
 ├── openspec/
-│   ├── project.md           # Describe your stack here
-│   ├── project.yml          # Config
-│   ├── specs/               # Source of truth
-│   ├── changes/             # Active work
-│   └── archive/             # Completed changes
-├── ralphy-spec/             # Local state + artifacts
+│   ├── project.md               # Fill in your stack here
+│   ├── project.yml              # Config
+│   ├── specs/                   # Source of truth
+│   ├── changes/                 # Active work
+│   └── archive/                 # Completed changes
+├── ralphy-spec/                 # Local state + artifacts
 │   ├── config.json
 │   ├── STATUS.md
 │   ├── TASKS.md
-│   ├── BUDGET.md
-│   └── ...
+│   └── BUDGET.md
+├── .gitignore
 └── package.json
 ```
 
-### 3. Fill in your project context
+## Manual Setup (if you prefer)
 
-Open `openspec/project.md` and describe your stack:
-
-```markdown
-# Project Context
-
-## Stack
-- Language: TypeScript
-- Framework: Express
-- Database: SQLite
-- Package manager: npm
-
-## Conventions
-- Code style: ESLint + Prettier
-- Testing: Vitest
-- CI: GitHub Actions
-```
-
-### 4. Add a `.gitignore`
+<details>
+<summary>Click to expand step-by-step instructions</summary>
 
 ```bash
+# 1. Create project
+mkdir my-notes-app && cd my-notes-app
+git init && npm init -y
+
+# 2. Scaffold
+npx ralphy-spec init --tools claude-code
+
+# 3. Add .gitignore
 cat <<'EOF' > .gitignore
 node_modules/
 ralphy-spec/state.db
@@ -74,29 +78,26 @@ ralphy-spec/runs/
 ralphy-spec/logs/
 ralphy-spec/worktrees/
 EOF
-```
 
-### 5. Make your first commit
+# 4. Fill in openspec/project.md with your stack
 
-```bash
-git add .
-git commit -m "Initial project setup with ralphy-spec"
-```
+# 5. Commit
+git add . && git commit -m "Initial project setup with ralphy-spec"
 
-### 6. Open Claude Code and start building
-
-```bash
+# 6. Open Claude Code
 claude
 ```
 
-You now have four skill commands available. Use them in order:
+</details>
 
 ## Workflow: Build a Note-Taking App (CRUD)
+
+Open your project in Claude Code and follow these steps:
 
 ### Step 1 -- Plan
 
 ```
-You: /ralphy-plan Build a note-taking app with CRUD operations
+/ralphy-plan Build a note-taking app with CRUD operations
 ```
 
 The planner **asks you clarifying questions** before writing any specs:
@@ -112,33 +113,31 @@ After you answer, it creates precise specs under `openspec/changes/add-notes-cru
 ### Step 2 -- Implement
 
 ```
-You: /ralphy-implement add-notes-crud
+/ralphy-implement add-notes-crud
 ```
 
-The AI implements each task from the spec: models, routes, validation, tests. It runs tests after each change and self-corrects until green.
+Implements each task from the spec: models, routes, validation, tests. Runs tests after each change and self-corrects until green.
 
 ### Step 3 -- Validate
 
 ```
-You: /ralphy-validate
+/ralphy-validate
 ```
 
-Runs all acceptance criteria from the specs. Reports what passes, what fails, and what's missing.
+Runs all acceptance criteria. Reports what passes, what fails, and what's missing.
 
 ### Step 4 -- Archive
 
 ```
-You: /ralphy-archive add-notes-crud
+/ralphy-archive add-notes-crud
 ```
 
 Moves the completed change to `openspec/archive/` and updates the canonical specs.
 
 ### Step 5 -- Repeat
 
-Plan the next feature and repeat the cycle:
-
 ```
-You: /ralphy-plan Add full-text search to notes
+/ralphy-plan Add full-text search to notes
 ```
 
 ## How It Works
@@ -157,10 +156,10 @@ You: /ralphy-plan Add full-text search to notes
 ## CLI Reference
 
 ```bash
-npx ralphy-spec init --tools claude-code   # Scaffold a new project
-npx ralphy-spec init --tools claude-code --force  # Re-scaffold (overwrites)
-ralphy-spec status                          # Show current run status
-ralphy-spec budget --json                   # Show spend/budget
+ralphy-spec init --tools claude-code          # Scaffold a new project
+ralphy-spec init --tools claude-code --force  # Re-scaffold (overwrites)
+ralphy-spec status                            # Show current run status
+ralphy-spec budget --json                     # Show spend/budget
 ```
 
 ## Credits
