@@ -1,0 +1,1 @@
+{"version":3,"file":"noop.js","sourceRoot":"","sources":["../../../src/core/backends/noop.ts"],"names":[],"mappings":";;;AAEA,MAAa,WAAW;IACM;IAA5B,YAA4B,EAAU;QAAV,OAAE,GAAF,EAAE,CAAQ;IAAG,CAAC;IAE1C,KAAK,CAAC,SAAS;QACb,OAAO;YACL,EAAE,EAAE,IAAI;YACR,OAAO,EACL,4FAA4F;SAC/F,CAAC;IACJ,CAAC;CACF;AAVD,kCAUC"}
