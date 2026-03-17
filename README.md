@@ -14,7 +14,7 @@ That's it. The script:
 1. Checks prerequisites (git, Node.js >= 20, npm)
 2. Builds ralphy-spec and links the CLI globally
 3. Creates `my-notes-app/` with git + npm initialized
-4. Runs `ralphy-spec init` (copies skill commands to `.claude/commands/`)
+4. Runs `ralphy-spec init` (copies skill files to `.claude/skills/`)
 5. Sets up `.gitignore` and makes the first commit
 
 When it finishes you'll see:
@@ -25,7 +25,7 @@ Done! Your project is ready.
   cd my-notes-app
   claude
 
-Inside Claude Code, use these commands:
+Inside Claude Code, use these skills:
 
   /ralphy-plan          Plan a feature (asks you questions first)
   /ralphy-implement     Build it from the spec
@@ -37,7 +37,7 @@ Inside Claude Code, use these commands:
 
 ```
 my-notes-app/                    # Your new project (independent git repo)
-├── .claude/commands/            # Skill commands (auto-installed)
+├── .claude/skills/              # Skills (auto-installed)
 │   ├── ralphy-plan.md           #   /ralphy-plan
 │   ├── ralphy-implement.md      #   /ralphy-implement
 │   ├── ralphy-validate.md       #   /ralphy-validate
