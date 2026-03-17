@@ -121,8 +121,17 @@ info "Created $PROJECT_DIR with git + npm"
 # ── Step 4: Scaffold with ralphy-spec ───────────────────────
 step 4 "Running ralphy-spec init"
 
-(cd "$PROJECT_DIR" && ralphy-spec init --tools claude-code)
-info "Scaffolded .claude/commands/, openspec/, and ralphy-spec/"
+(cd "$PROJECT_DIR" && ralphy-spec init --tools claude-code) || warn "ralphy-spec init had issues — will copy skills manually"
+
+# Ensure .claude/skills/ are present (copy from source templates as fallback)
+SKILLS_SRC="$RALPHY_CLONE_DIR/src/templates/claude-code"
+SKILLS_DST="$PROJECT_DIR/.claude/skills"
+if [ -d "$SKILLS_SRC" ] && [ ! -f "$SKILLS_DST/ralphy-plan.md" ]; then
+  mkdir -p "$SKILLS_DST"
+  cp "$SKILLS_SRC"/*.md "$SKILLS_DST/"
+  info "Copied Claude Code skills from source templates"
+fi
+info "Scaffolded .claude/skills/, openspec/, and ralphy-spec/"
 
 # ── Step 5: Set up .gitignore ───────────────────────────────
 step 5 "Setting up .gitignore"
@@ -152,7 +161,7 @@ echo ""
 echo "  cd $PROJECT_NAME"
 echo "  claude"
 echo ""
-echo "Inside Claude Code, use these commands:"
+echo "Inside Claude Code, use these skills:"
 echo ""
 echo "  /ralphy-plan          Plan a feature (asks you questions first)"
 echo "  /ralphy-implement     Build it from the spec"
