@@ -44,7 +44,7 @@ fi
 
 PROJECT_NAME="$1"
 PROJECT_DIR="$(pwd)/$PROJECT_NAME"
-TOTAL_STEPS=7
+TOTAL_STEPS=8
 
 if [ -d "$PROJECT_DIR" ]; then
   fail "Directory '$PROJECT_NAME' already exists. Pick a different name or remove it first."
@@ -133,8 +133,49 @@ if [ -d "$SKILLS_SRC" ] && [ ! -f "$SKILLS_DST/ralphy-plan.md" ]; then
 fi
 info "Scaffolded .claude/skills/, openspec/, and ralphy-spec/"
 
-# ── Step 5: Generate project README ──────────────────────────
-step 5 "Generating README"
+# ── Step 5: Generate CLAUDE.md ───────────────────────────────
+step 5 "Generating CLAUDE.md"
+
+cat > "$PROJECT_DIR/CLAUDE.md" << CLAUDEEOF
+# $PROJECT_NAME
+
+This project uses the ralphy-spec workflow for spec-driven development.
+
+## Workflow
+
+Use these skills in order:
+
+1. \`/ralphy-plan <description>\` — Plan a feature (asks clarifying questions first, then generates specs)
+2. \`/ralphy-implement <change-name>\` — Implement the planned change task by task
+3. \`/ralphy-validate\` — Verify all acceptance criteria pass
+4. \`/ralphy-archive <change-name>\` — Archive the completed change
+
+You can also pass a file as context to the planner: \`/ralphy-plan @features/my-feature.md\`
+
+## Key paths
+
+- \`openspec/project.md\` — Project context (stack, conventions, architecture). Read this before any work.
+- \`openspec/project.yml\` — Project configuration.
+- \`openspec/specs/\` — Canonical specifications (source of truth).
+- \`openspec/changes/\` — Active changes being worked on (proposal, tasks, spec deltas).
+- \`openspec/archive/\` — Completed changes.
+- \`ralphy-spec/config.json\` — Runtime config (test command, completion signal).
+- \`ralphy-spec/STATUS.md\` — Current run status.
+- \`ralphy-spec/TASKS.md\` — Task progress.
+
+## Rules
+
+- Always read \`openspec/project.md\` and relevant specs before making changes.
+- Follow existing patterns in the codebase.
+- Run tests after every code change.
+- Never mark a task complete until its tests pass.
+- When planning, ask clarifying questions — do not assume requirements.
+CLAUDEEOF
+
+info "CLAUDE.md generated"
+
+# ── Step 6: Generate project README ──────────────────────────
+step 6 "Generating README"
 
 cat > "$PROJECT_DIR/README.md" << READMEEOF
 # $PROJECT_NAME
@@ -272,8 +313,8 @@ READMEEOF
 
 info "README.md generated"
 
-# ── Step 6: Set up .gitignore ───────────────────────────────
-step 6 "Setting up .gitignore"
+# ── Step 7: Set up .gitignore ───────────────────────────────
+step 7 "Setting up .gitignore"
 
 cat > "$PROJECT_DIR/.gitignore" << 'GITIGNORE'
 node_modules/
@@ -287,8 +328,8 @@ GITIGNORE
 
 info ".gitignore created"
 
-# ── Step 7: Initial commit ──────────────────────────────────
-step 7 "Making initial commit"
+# ── Step 8: Initial commit ──────────────────────────────────
+step 8 "Making initial commit"
 
 (cd "$PROJECT_DIR" && git add . && git commit --quiet -m "Initial project setup with ralphy-spec")
 info "Committed"
